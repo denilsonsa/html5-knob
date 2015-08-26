@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HTML5 &lt;x-knob&gt; rotating knob web component</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="xknob.js" type="text/javascript" async></script>
+<link href="xknob.css" type="text/css" rel="stylesheet">
+
+<style type="text/css">
+html, body {
+	background: white;
+	color: black;
+}
+p:target {
+	background: #eeeeec;
+}
+
+#big {
+	width: 12em;
+	height: 12em;
+}
+
+#sizes x-knob {
+	outline: 1px blue dotted;
+}
+#sizes x-knob:nth-child(1) { width: 1em; height: 1em; }
+#sizes x-knob:nth-child(2) { width: 2em; height: 2em; }
+#sizes x-knob:nth-child(3) { width: 4em; height: 2em; }
+#sizes x-knob:nth-child(4) { width: 2em; height: 4em; }
+#sizes x-knob:nth-child(5) { width: 4em; height: 4em; }
+
+#styling x-knob:nth-child(1)::shadow .knob_gfx circle { fill: #729fcf; transition: 1s fill; stroke: #204a87; }
+#styling x-knob:nth-child(1)::shadow .knob_gfx line { stroke: #204a87; }
+#styling x-knob:nth-child(1):hover::shadow .knob_gfx circle { fill: #ad7fa8; }
+</style>
+
+</head>
+<body>
+
+<p><a href="https://github.com/denilsonsa/html5-knob">View this project on GitHub!</a></p>
+
+<!-- I'm sorry I'm using a table for layout. But my intent is to demonstrate the knob, not the table. -->
+<table id="bigdemo">
+	<tr>
+		<td rowspan="4"><x-knob id="big"></x-knob></td>
+		<td><code>divisions</code></td>
+		<td><input type="number" id="bigdivisions" min="0" step="1" value="0" title="Accepts integers starting from 2. Any other value is ignored."></td>
+	</tr>
+	<tr>
+		<td><code>min</code></td>
+		<td><input type="number" id="bigmin" value="" title="Any float, or null/empty for not having a limit."></td>
+	</tr>
+	<tr>
+		<td><code>max</code></td>
+		<td><input type="number" id="bigmax" value="" title="Any float, or null/empty for not having a limit."></td>
+	</tr>
+	<tr>
+		<td><code>value</code></td>
+		<td><input type="number" id="bigvalue" value=""></td>
+	</tr>
+</table>
+
+<p id="simple"><x-knob></x-knob> Simplest markup "just works" with some reasonable defaults. It only requires importing <code>xknob.js</code> and <code>xknob.css</code>.</p>
+
+<p id="sizes"><x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> SVG graphics adapting to any size. Also means the click region is precisely the visible circle, and nothing else.</p>
+
+<p id="styling"><x-knob></x-knob> Styling is only possible using Shadow DOM.</p>
+
+<p id="events"><x-knob id="eventsdemo"></x-knob> Supports <code>input</code> event (value = <output id="oninputvalue"></output>) and <code>change</code> event (value = <output id="onchangevalue"></output>).</p>
+
+<p id="bubbling"><x-knob data-name="first knob"></x-knob> <x-knob data-name="second knob"></x-knob> The events bubble correctly: <output id="bubblingoutput"></output></p>
+
+<p id="snap"><x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> Optionally snaps the rotation to discrete rotations. <output id="snapoutput"></output></p>
+
+<p id="minmax"><x-knob min="-1" max="1"></x-knob> <x-knob min="0"></x-knob> <x-knob max="2"></x-knob> <x-knob min="-0.3333" max="0.3333"></x-knob> Has support for <code>min</code> and <code>max</code> attributes. <output id="minmaxoutput"></output></p>
+
+<p id="attrs"><input id="attrsdivisions" type="number" min="2" step="1" value="8" style="width: 4em" title="divisions"> <x-knob id="attrsmin" value="-1" title="min"></x-knob> <x-knob id="attrsmax" value="1" title="max"></x-knob> <x-knob id="attrsvalue"></x-knob> All attributes (<code>divisions</code>, <code>min</code>, <code>max</code>, <code>value</code>) can be set using standard DOM methods (such as <code>setAttribute()</code>) or directly to the object. <x-knob id="attrsdom"></x-knob> <x-knob id="attrsdirect"></x-knob></p>
+
+<script type="text/javascript">
+
+document.getElementById('bigdemo').addEventListener('input', function(ev) {
+	if (['bigdivisions', 'bigmin', 'bigmax', 'bigvalue'].indexOf(ev.target.id) > -1) {
+		var attr = ev.target.id.replace('big', '');
+		document.getElementById('big')[attr] = ev.target.value;
+	}
+	document.getElementById('bigvalue').value = document.getElementById('big').value;
+});
+
+
+var eventsdemo = document.getElementById('eventsdemo');
+eventsdemo.addEventListener('input', function(ev) {
+	document.getElementById('oninputvalue').value = ev.target.value;
+});
+eventsdemo.addEventListener('change', function(ev) {
+	document.getElementById('onchangevalue').value = ev.target.value;
+});
+
+
+var bubbling = document.getElementById('bubbling');  // This is the <p> element.
+var bubbling_handler = function(ev) {
+	document.getElementById('bubblingoutput').value = ev.type + ' on ' + ev.target.dataset.name;
+};
+bubbling.addEventListener('input', bubbling_handler);
+bubbling.addEventListener('change', bubbling_handler);
+
+
+document.getElementById('snap').addEventListener('input', function(ev) {
+	document.getElementById('snapoutput').value = Array.prototype.map.call(
+		ev.currentTarget.querySelectorAll('x-knob'),
+		function(x) { return x.value.toFixed(2); }
+	).join(' | ');
+});
+
+
+document.getElementById('minmax').addEventListener('input', function(ev) {
+	document.getElementById('minmaxoutput').value = Array.prototype.map.call(
+		ev.currentTarget.querySelectorAll('x-knob'),
+		function(x) { return x.value.toFixed(2); }
+	).join(' | ');
+});
+
+
+document.getElementById('attrs').addEventListener('input', function(ev) {
+	if (['attrsdivisions', 'attrsmin', 'attrsmax', 'attrsvalue'].indexOf(ev.target.id) > -1) {
+		var attr = ev.target.id.replace('attrs', '');
+		document.getElementById('attrsdom').setAttribute(attr, ev.target.value);
+		document.getElementById('attrsdirect')[attr] = ev.target.value;
+	}
+});
+
+</script>
+</body>
+</html>
