@@ -3,6 +3,8 @@
 
 `<x-knob>` is a rotary web input component that can be controlled by dragging and rotating it (with the mouse pointer or touch input).
 
+[Open the demo page!](http://denilsonsa.github.io/html5-knob/)
+
 This component has been created as a proof-of-concept, as a simple base that can be improved upon. It is a more polished version of a [previous experiment](http://codepen.io/denilsonsa/pen/LVwWJM).
 
 Features:
