@@ -40,6 +40,8 @@ The current implementation does not support keyboard input. It would be nice to 
 
 The current implementation does not support DOM0-style events (e.g. `xknob.oninput = function(){}` will not work). Using the modern `xknob.addEventListener('input')` works fine.
 
+This control is not considered a [form-associated element](http://www.w3.org/TR/html5/forms.html#form-associated-element), thus its value does not get submitted. A partial solution would be to add `<input type="hidden">` as a direct children of `<x-knob>`; however, I don't know how trigger an update of XKnob whenever the `<input type="hidden">` element gets updated (i.e. how to make `form.input_name.value = 1` also update XKnob?).
+
 For some reason, using two fingers to zoom the page will not work if one of the fingers starts the touch on the knob.
 
 
