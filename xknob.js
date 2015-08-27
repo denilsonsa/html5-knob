@@ -42,8 +42,29 @@ if (!window.XKnob) {
 		////////////////////
 		// Event handling functions.
 
+		var add_listeners_to_document = function(elem) {
+			if (document.body instanceof HTMLElement) {
+				elem = elem.ownerDocument;
+			}
+			// Duplicate event listeners are discarded.
+			elem.addEventListener('mouseup', stop_dragging);
+			elem.addEventListener('mousemove', drag_rotate);
+			elem.addEventListener('touchend', stop_dragging);
+			elem.addEventListener('touchmove', drag_rotate);
+		}
+		var remove_listeners_from_document = function(elem) {
+			if (document.body instanceof HTMLElement) {
+				elem = elem.ownerDocument;
+			}
+			elem.removeEventListener('mouseup', stop_dragging);
+			elem.removeEventListener('mousemove', drag_rotate);
+			elem.removeEventListener('touchend', stop_dragging);
+			elem.removeEventListener('touchmove', drag_rotate);
+		}
+
 		// Should be attached to '.knob_gfx'.
 		var start_dragging = function(ev) {
+			remove_listeners_from_document(ev.target);
 			xknob_being_dragged = null;
 
 			// Only handling clicks with the left mouse button.
@@ -69,12 +90,17 @@ if (!window.XKnob) {
 			xknob_drag_previous_angle = xknob._get_mouse_angle(ev);
 			xknob_drag_previous_value = xknob.value;
 			xknob_drag_initial_value = xknob.value;
+
+			add_listeners_to_document(xknob);
 		}
 
 		// Should be attached to the document, because this event may happen
 		// outside of XKnob.
 		var stop_dragging = function(ev) {
-			if (!xknob_being_dragged) return;
+			if (!xknob_being_dragged) {
+				remove_listeners_from_document(ev.target);
+				return;
+			}
 
 			if (xknob_drag_initial_value !== xknob_being_dragged.value) {
 				xknob_being_dragged.dispatchEvent(new Event('change', {
@@ -83,13 +109,17 @@ if (!window.XKnob) {
 				}));
 			}
 
+			remove_listeners_from_document(ev.target);
 			xknob_being_dragged = null;
 		}
 
 		// Should be attached to the document, because this event may happen
 		// outside of XKnob.
 		var drag_rotate = function(ev) {
-			if (!xknob_being_dragged) return;
+			if (!xknob_being_dragged) {
+				remove_listeners_from_document(ev.target);
+				return;
+			}
 
 			var new_angle = xknob_being_dragged._get_mouse_angle(ev);
 			var old_angle = xknob_drag_previous_angle;
