@@ -142,7 +142,6 @@ table#bigdemo th {
 			<circle cx="0" cy="0" r="4" opacity="0"/>
 			<path fill="#2e3436" d="M0,-4 l0.5,5 h-1 z"/>
 		</symbol>
-
 		<symbol id="chromatic-wheel" viewBox="-4 -4 8 8">
 			<!-- Inspired by https://openclipart.org/detail/181641/chromatic-wheel-1 -->
 			<!-- Generated using:
@@ -204,7 +203,6 @@ table#bigdemo th {
 			<use xlink:href="#circle-section" x="0" y="0" fill="hsl(340, 100%, 50%)" transform="rotate(340)"/>
 			<use xlink:href="#circle-section" x="0" y="0" fill="hsl(350, 100%, 50%)" transform="rotate(350)"/>
 		</symbol>
-
 		<symbol id="chromatic-wheel-labeled" viewBox="-5 -5 10 10">
 			<g visibility="hidden">
 				<path id="circle-section" d="M-0.2614672282429745,-2.988584094275237 -0.34862297099063266,-3.984778792366982 0.34862297099063266,-3.984778792366982 0.2614672282429745,-2.988584094275237 z"/>
@@ -247,7 +245,7 @@ table#bigdemo th {
 			<use xlink:href="#circle-section" x="0" y="0" fill="hsl(340, 100%, 50%)" transform="rotate(340)"/>
 			<use xlink:href="#circle-section" x="0" y="0" fill="hsl(350, 100%, 50%)" transform="rotate(350)"/>
 
-			<g text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="0.4px">
+			<g text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="0.4px">
 				<text x="0" y="-4.5" transform="rotate(0)">0</text>
 				<text x="0" y="-4.5" transform="rotate(10)">10</text>
 				<text x="0" y="-4.5" transform="rotate(20)">20</text>
@@ -287,6 +285,23 @@ table#bigdemo th {
 			</g>
 		</symbol>
 
+		<!-- Driving wheel clipart from https://openclipart.org/detail/172010/driving-wheel -->
+		<!-- Compatibility results:
+		* As <image>:
+			* Works fine in Chrome 44. Square-shaped clickable area.
+			* Almost works in Firefox 40. Square-shaped opaque background instead of being transparent.
+		* As <use>:
+			* Does not work in Chrome 44. Nothing is displayed. Unsure about the reason.
+			* Works fine in Firefox 40.
+		-->
+		<symbol id="driving-wheel-as-image" viewBox="0 0 1 1">
+			<image xlink:href="drivingwheel.svg" x="0" y="0" width="1" height="1"/>
+		</symbol>
+		<symbol id="driving-wheel-as-use" viewBox="0 0 1 1">
+			<!-- https://css-tricks.com/svg-use-external-source/ -->
+			<use xlink:href="drivingwheel.svg#drivingwheel" x="0" y="0" width="1" height="1"/>
+		</symbol>
+
 		<!-- Clock hands from http://www.3quarks.com/en/SVGClock/ http://www.3quarks.com/images/svg/station-clock.svg -->
 		<symbol id="hourHandSiemens" viewBox="0 0 200 200">
 			<g style="fill:#222">
@@ -313,6 +328,7 @@ table#bigdemo th {
 			</g>
 		</symbol>
 	</defs>
+
 	<defs id="sample_bg">
 		<symbol id="bg-green" viewBox="0 0 1 1">
 			<rect x="0" y="0" width="1" height="1" fill="#8ae234"/>

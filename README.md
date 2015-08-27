@@ -19,6 +19,7 @@ Features:
     * [Works](http://webcomponents.org/) on Google Chrome and Opera.
     * [Does not work](http://webcomponents.org/) on Firefox, Safari, IE, Edge.
     * Using [webcomponentsjs](https://github.com/webcomponents/webcomponentsjs/releases) as a set of polyfills and adding [`shim-shadowdom` to the CSS](https://github.com/Polymer/docs/issues/269) improves the compatibility and makes it work correctly on Firefox. Unsure about other browsers.
+    * Does not require polyfills on Firefox if [`dom.webcomponents.enabled` flag](https://www.designedbyaturtle.co.uk/2015/how-to-enable-web-components-in-firefox-shadow-dom/) is enabled.
 * Most likely not production-ready!
     * Unless the incompatibilities and limitations can be ignored.
 * Excellent example for learning the new web technologies.
