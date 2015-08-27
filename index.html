@@ -28,9 +28,40 @@ p:target {
 	background: #eeeeec;
 }
 
+table#bigdemo {
+	border-collapse: collapse;
+}
+table#bigdemo td > label {
+	display: block;
+}
+table#bigdemo th {
+	text-align: right;
+	font: inherit;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+#big_container {
+	position: relative;
+	padding: 0;
+}
+#big_bg {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+}
 #big {
+	display: block;
+	position: relative;
 	width: 12em;
 	height: 12em;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center center;
 }
 
 #sizes x-knob {
@@ -42,22 +73,145 @@ p:target {
 #sizes x-knob:nth-child(4) { width: 2em; height: 4em; }
 #sizes x-knob:nth-child(5) { width: 4em; height: 4em; }
 
-#styling x-knob:nth-child(1)::shadow .knob_gfx circle { fill: #729fcf; transition: 1s fill; stroke: #204a87; }
-#styling x-knob:nth-child(1)::shadow .knob_gfx line { stroke: #204a87; }
-#styling x-knob:nth-child(1):hover::shadow .knob_gfx circle { fill: #ad7fa8; }
+#clock-example {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: center;
+}
+#clock-block {
+	width: 16em;
+	height: 16em;
+	position: relative;
+	flex: 0 0 auto;
+}
+#clock-output {
+	flex: 1 1 auto;
+	font-size: 3em;
+	padding: 1em;
+	min-width: 16em;
+	width: 16em;
+}
+#clock-block > svg,
+#clock-block > x-knob {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+}
+</style>
+
+<style type="text/css" shim-shadowdom>
+/* Requires shim-shadowdom and webcomponentsjs in Firefox (due to lack of ::shadow support). https://github.com/Polymer/docs/issues/269 */
+#transition x-knob::shadow .knob_gfx { transition: 125ms transform; }
 </style>
 
 <svg style="display: none;">
-	<defs>
-		<symbol id="plain-line" viewBox="-6 -6 12 12">
-			<!-- Colors from Tango palette -->
+	<!-- Most of the colors are from Tango palette -->
+	<defs id="sample_gfx">
+		<symbol id="circle-with-dot" viewBox="-6 -6 12 12">
 			<circle cx="0" cy="0" r="5" stroke="#2e3436" fill="#babdb6" stroke-width="0.25"/>
-			<line x1="0" y1="-1.25" x2="0" y2="-4.5" stroke="#2e3436" stroke-width="0.5px" stroke-linecap="round"/>
+			<circle cx="0" cy="-3" r="0.75" stroke="none" fill="#2e3436"/>
 		</symbol>
-		<symbol id="plain-dot" viewBox="-6 -6 12 12">
-			<!-- Colors from Tango palette -->
-			<circle cx="0" cy="0" r="5" stroke="#2e3436" fill="#babdb6" stroke-width="0.25"/>
-			<circle cx="0" cy="-4.5" r="0.5" stroke="none" fill="#2e3436"/>
+		<symbol id="long-stick" viewBox="-6 -6 12 12">
+			<circle cx="0" cy="0" r="2.5" stroke="#2e3436" fill="#888a85" stroke-width="0.25"/>
+			<rect x="-1" y="-5" rx="1" ry="1" width="2" height="10" stroke="#2e3436" fill="#babdb6" stroke-width="0.25"/>
+			<line x1="0" y1="-3.75" x2="0" y2="-4.5" stroke="#2e3436" stroke-width="0.5px" stroke-linecap="round"/>
+		</symbol>
+		<symbol id="arrow" viewBox="-3 -3 6 6">
+			<path fill="#2e3436" d="M0,-3 l2,3 h-1 v2.5 h-2 v-2.5 h-1 z"/>
+		</symbol>
+		<symbol id="arrow-inside-circle" viewBox="-3 -3 6 6">
+			<circle cx="0" cy="0" r="3" fill="#fce94f"/>
+			<path fill="#2e3436" d="M0,-3 l2,3 h-1 v2.5 h-2 v-2.5 h-1 z"/>
+		</symbol>
+		<symbol id="arrow-too-big" viewBox="-3 -3 6 6">
+			<circle cx="0" cy="0" r="3" fill="#fce94f"/>
+			<path fill="#a40000" d="M0,-3 l3,3 h-1 v3 h-4 v-3 h-1 z"/>
+		</symbol>
+		<symbol id="transparent-circle" viewBox="-4 -4 8 8">
+			<!-- A transparent SVG object still receives pointer events. -->
+			<circle cx="0" cy="0" r="4" opacity="0"/>
+			<path fill="#2e3436" d="M0,-4 l0.5,5 h-1 z"/>
+		</symbol>
+
+		<!-- Clock hands from http://www.3quarks.com/en/SVGClock/ http://www.3quarks.com/images/svg/station-clock.svg -->
+		<symbol id="hourHandSiemens" viewBox="0 0 200 200">
+			<g style="fill:#222">
+				<rect x="97.3" y="65" width="5.4" height="35" style="stroke:none"/>
+				<circle cx="97.3" cy="58.5" r="9" style="stroke:none"/>
+				<circle cx="102.7" cy="58.5" r="9" style="stroke:none"/>
+				<path d="M 88.3,58.5 Q 88.3,52 100,37.5 Q 111.7,52 111.7,58.5 Z" style="stroke:none"/>
+				<path d="M 93.5,123 Q 100,125.5 106.5,123 Q 103,116 102.7,100 L 97.3,100 Q 97.3,116 93.5,123 Z" style="stroke:none"/>
+				<circle cx="100" cy="100" r="7.4" style="stroke:none"/>
+			</g>
+		</symbol>
+		<symbol id="minuteHandSiemens" viewBox="0 0 200 200">
+			<g style="fill:#222">
+				<polygon points="95.3,49 99.5,2 100.5,2 104.7,49 102.7,100 97.3,100" style="stroke:none"/>
+				<path d="M 93.5,123 Q 100,125.5 106.5,123 Q 103,116 102.7,100 L 97.3,100 Q 97.3,116 93.5,123 Z" style="stroke:none"/>
+				<circle cx="100" cy="100" r="7" style="stroke:none"/>
+			</g>
+		</symbol>
+		<symbol id="secondHandDIN41071.2" viewBox="0 0 200 200">
+			<g style="fill:#ad1a14; stroke:#ad1a14">
+				<polygon points="98.8,11 100,9.8 101.2,11 101.6,42 98.4,42" style="stroke:none"/>
+				<polygon points="98.1,58 101.9,58 102.5,122 97.5,122" style="stroke:none"/>
+				<circle cx="100" cy="50" r="8.5" style="fill:none; stroke-width:6.5"/>
+			</g>
+		</symbol>
+	</defs>
+	<defs id="sample_bg">
+		<symbol id="bg-green" viewBox="0 0 1 1">
+			<rect x="0" y="0" width="1" height="1" fill="#8ae234"/>
+		</symbol>
+		<symbol id="bg-green-circle" viewBox="-1 -1 2 2">
+			<circle cx="0" cy="0" r="1" fill="#8ae234"/>
+		</symbol>
+		<symbol id="bg-radial-lines-2" viewBox="-1 -1 2 2">
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(  0)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(180)"/>
+		</symbol>
+		<symbol id="bg-radial-lines-3" viewBox="-1 -1 2 2">
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(  0)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(120)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(240)"/>
+		</symbol>
+		<symbol id="bg-radial-lines-4" viewBox="-1 -1 2 2">
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(  0)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate( 90)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(180)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(270)"/>
+		</symbol>
+		<symbol id="bg-radial-lines-5" viewBox="-1 -1 2 2">
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(  0)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate( 72)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(144)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(216)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(288)"/>
+		</symbol>
+		<symbol id="bg-radial-lines-6" viewBox="-1 -1 2 2">
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(  0)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate( 60)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(120)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(180)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(240)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(300)"/>
+		</symbol>
+		<symbol id="bg-radial-lines-8" viewBox="-1 -1 2 2">
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(  0)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate( 45)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate( 90)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(135)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(180)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(225)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(270)"/>
+			<line x1="0" y1="0" x2="0" y2="-1" stroke="#2e3436" stroke-width="0.0078125px" transform="rotate(315)"/>
 		</symbol>
 	</defs>
 </svg>
@@ -76,57 +230,123 @@ if (window.WebComponents) {
 <!-- I'm sorry I'm using a table for layout. But my intent is to demonstrate the knob, not the table. -->
 <table id="bigdemo">
 	<tr>
-		<td rowspan="5"><x-knob id="big"></x-knob></td>
-		<td><code>divisions</code></td>
+		<td rowspan="7" id="big_container">
+			<!-- Just a background. -->
+			<svg id="big_bg" viewBox="0 0 1 1"></svg>
+			<!-- This is the main element! -->
+			<x-knob id="big"></x-knob>
+		</td>
+		<th><label for="bigdivisions"><code>divisions</code></label></th>
 		<td><input type="number" id="bigdivisions" min="0" step="1" value="0" title="Accepts integers starting from 2. Any other value is ignored."></td>
 	</tr>
 	<tr>
-		<td><code>min</code></td>
+		<th><label for="bigmin"><code>min</code></label></th>
 		<td><input type="number" id="bigmin" step="any" value="" title="Any float, or null/empty for not having a limit."></td>
 	</tr>
 	<tr>
-		<td><code>max</code></td>
+		<th><label for="bigmax"><code>max</code></label></th>
 		<td><input type="number" id="bigmax" step="any" value="" title="Any float, or null/empty for not having a limit."></td>
 	</tr>
 	<tr>
-		<td><code>svgusehref</code></td>
-		<td><select id="bigsvgusehref">
+		<th><label for="bigsvgsymbolid"><code>svgsymbolid</code></label></th>
+		<td><select id="bigsvgsymbolid">
 			<option value="" selected>&lt;empty&gt;</option>
-			<option value="#plain-line">#plain-line</option>
-			<option value="#plain-dot">#plain-dot</option>
-		</select></td>
+		</select>
+		<script type="text/javascript">
+		(function(){
+			// Filling up the <select> with all available sample graphics.
+			var select = document.getElementById('bigsvgsymbolid');
+			Array.prototype.forEach.call(
+				document.querySelectorAll('#sample_gfx symbol[id]'),
+				function(curr, index, arr) {
+					var option = document.createElement('option');
+					var id = curr.getAttribute('id');
+					option.textContent = id;
+					option.setAttribute('value', id);
+					select.appendChild(option);
+				}
+			);
+		})();
+		</script></td>
 	</tr>
 	<tr>
-		<td><code>value</code></td>
+		<th><label for="bigbackground">background</label></th>
+		<td><select id="bigbackground">
+			<option value="" selected>none</option>
+		</select>
+		<script type="text/javascript">
+		(function(){
+			// Filling up the <select> with all available sample backgrounds.
+			var select = document.getElementById('bigbackground');
+			Array.prototype.forEach.call(
+				document.querySelectorAll('#sample_bg symbol[id]'),
+				function(curr, index, arr) {
+					var option = document.createElement('option');
+					var id = curr.getAttribute('id');
+					option.textContent = id;
+					option.setAttribute('value', id);
+					select.appendChild(option);
+				}
+			);
+		})();
+		</script></td>
+	</tr>
+	<tr>
+		<th></th>
+		<td><label><input type="checkbox" id="bigpadding"> Add padding</td>
+	</tr>
+	<tr>
+		<th><label for="bigvalue"><code>value</code></label></th>
 		<td><input type="number" id="bigvalue" step="any" value=""></td>
 	</tr>
 </table>
 
 <p id="simple"><x-knob></x-knob> Simplest markup "just works" with some reasonable defaults. It only requires importing <code>xknob.js</code> and <code>xknob.css</code>.</p>
 
-<p id="sizes"><x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> SVG graphics adapting to any size. Also means the click region is precisely the visible circle, and nothing else.</p>
+<p id="sizes"><x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> SVG graphics adapting to any size. Also means the click region is precisely the graphic itself, and nothing else.</p>
 
-<p id="styling"><x-knob></x-knob> Styling is only possible using Shadow DOM.</p>
+<p id="gfx"><x-knob svgsymbolid="circle-with-dot"></x-knob> <x-knob svgsymbolid="long-stick"></x-knob> <x-knob svgsymbolid="arrow"></x-knob> A custom SVG graphic can be selected by passing an <code>id</code> of an SVG <code>&lt;symbol&gt;</code> available from within the same document. The symbol will be (deep-)copied into the shadow DOM of the <code>x-knob</code> element. Symbols from external files are not supported.</p>
 
 <p id="events"><x-knob id="eventsdemo"></x-knob> Supports <code>input</code> event (value = <output id="oninputvalue"></output>) and <code>change</code> event (value = <output id="onchangevalue"></output>).</p>
 
 <p id="bubbling"><x-knob data-name="first knob"></x-knob> <x-knob data-name="second knob"></x-knob> The events bubble correctly: <output id="bubblingoutput"></output></p>
 
-<p id="snap"><x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> Optionally snaps the rotation to discrete rotations. <output id="snapoutput"></output></p>
+<p id="snap"><x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> Optionally snaps the knob to discrete rotations. <output id="snapoutput"></output></p>
+
+<p id="transition"><x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> CSS transitions work fine together with discrete rotations, but don't look good on a continuous (analog) knob. <x-knob></x-knob></p>
 
 <p id="minmax"><x-knob min="-1" max="1"></x-knob> <x-knob min="0"></x-knob> <x-knob max="2"></x-knob> <x-knob min="-0.3333" max="0.3333"></x-knob> Has support for <code>min</code> and <code>max</code> attributes. <output id="minmaxoutput"></output></p>
 
-<p id="attrs"><input id="attrsdivisions" type="number" min="2" step="1" value="8" style="width: 4em" title="divisions"> <x-knob id="attrsmin" value="-1" title="min"></x-knob> <x-knob id="attrsmax" value="1" title="max"></x-knob> <x-knob id="attrsvalue"></x-knob> All attributes (<code>divisions</code>, <code>min</code>, <code>max</code>, <code>value</code>) can be set using standard DOM methods (such as <code>setAttribute()</code>) or directly to the object. <x-knob id="attrsdom"></x-knob> <x-knob id="attrsdirect"></x-knob></p>
+<p id="attrs"><input id="attrsdivisions" type="number" min="2" step="1" value="8" style="width: 4em" title="divisions"> <x-knob id="attrsmin" value="-1" title="min"></x-knob> <x-knob id="attrsmax" value="1" title="max"></x-knob> <x-knob id="attrsvalue"></x-knob> All attributes (<code>divisions</code>, <code>min</code>, <code>max</code>, <code>svgsymbolid</code>, <code>value</code>) can be set using standard DOM methods (such as <code>setAttribute()</code>) or directly to the object. <x-knob id="attrsdom"></x-knob> <x-knob id="attrsdirect"></x-knob></p>
 
 <script type="text/javascript">
 
 document.getElementById('bigdemo').addEventListener('input', function(ev) {
-	if (['bigdivisions', 'bigmin', 'bigmax', 'bigsvgusehref', 'bigvalue'].indexOf(ev.target.id) > -1) {
+	if (['bigdivisions', 'bigmin', 'bigmax', 'bigsvgsymbolid', 'bigvalue'].indexOf(ev.target.id) > -1) {
 		var attr = ev.target.id.replace('big', '');
 		document.getElementById('big')[attr] = ev.target.value;
+	} else if (ev.target.id === 'bigbackground') {
+		document.getElementById('big_bg').innerHTML = '<use xlink:href="#' + ev.target.value + '" x="0" y="0" width="1" height="1"/>';
 	}
 	document.getElementById('bigvalue').value = document.getElementById('big').value;
 });
+document.getElementById('bigpadding').addEventListener('click', function(ev) {
+	document.getElementById('big').style.padding = ev.target.checked ? '1em' : '0';
+});
+
+// 'input' event does not fire for <select> in Firefox.
+// This (ugly) workaround will cause the 'input' event to fire twice for <select> in other browsers.
+Array.prototype.forEach.call(
+	document.querySelectorAll('select'),
+	function(curr, index, arr) {
+		curr.addEventListener('change', function(ev) {
+			curr.dispatchEvent(new Event('input', {
+				'bubbles': ev.bubbles,
+				'cancelable': ev.cancelable
+			}));
+		});
+	}
+);
 
 
 var eventsdemo = document.getElementById('eventsdemo');
@@ -171,5 +391,150 @@ document.getElementById('attrs').addEventListener('input', function(ev) {
 });
 
 </script>
+
+<hr>
+
+<p>Finally, a more realistic and complex demonstration. The clock graphic is from <a href="http://www.3quarks.com/en/SVGClock/">"SVG Railway Station Clock" by Rüdiger Appel</a>. Each hand is a <code>&lt;x-knob&gt;</code> element.</p>
+
+<p id="clock-example">
+	<span id="clock-block">
+		<!-- Clock from http://www.3quarks.com/en/SVGClock/ http://www.3quarks.com/images/svg/station-clock.svg -->
+		<svg viewBox="0 0 200 200">
+			<defs>
+			    <!-- hour stroke (DIN 41091.4) -->
+				<symbol id="hourStrokeDIN41091.4">
+					<rect x="97" y="0" width="6" height="7"/>
+				</symbol>
+
+				<!-- minute stroke (DIN 41091.4) -->
+				<symbol id="minuteStrokeDIN41091.4">
+					<rect x="98.75" y="0" width="2.5" height="7"/>
+				</symbol>
+
+				<!-- five minutes strokes (DIN 41091.4) -->
+				<symbol id="fiveMinutesStrokesDIN41091.4">
+					<use xlink:href="#hourStrokeDIN41091.4"/>
+					<use xlink:href="#minuteStrokeDIN41091.4" transform="rotate( 6, 100, 100)"/>
+					<use xlink:href="#minuteStrokeDIN41091.4" transform="rotate(12, 100, 100)"/>
+					<use xlink:href="#minuteStrokeDIN41091.4" transform="rotate(18, 100, 100)"/>
+					<use xlink:href="#minuteStrokeDIN41091.4" transform="rotate(24, 100, 100)"/>
+				</symbol>
+
+				<!-- quarter strokes (DIN 41091.4) -->
+				<symbol id="quarterStrokesDIN41091.4">
+					<use xlink:href="#fiveMinutesStrokesDIN41091.4"/>
+					<use xlink:href="#fiveMinutesStrokesDIN41091.4" transform="rotate(30, 100, 100)"/>
+					<use xlink:href="#fiveMinutesStrokesDIN41091.4" transform="rotate(60, 100, 100)"/>
+				</symbol>
+
+				<!-- visible dial circle -->
+				<clipPath id="dialCircle">
+					<circle cx="100" cy="100" r="100"/>
+				</clipPath>
+			</defs>
+			<g clip-path="url(#dialCircle)">
+				<!-- background -->
+				<g id="background" style="fill:none">
+					<circle cx="100" cy="100" r="100" style="stroke:none"/>
+				</g>
+				<g id="dial" style="fill:#333">
+					<g id="dialDIN41091.4">
+						<use xlink:href="#quarterStrokesDIN41091.4" style="stroke:none"/>
+						<use xlink:href="#quarterStrokesDIN41091.4" style="stroke:none" transform="rotate( 90, 100, 100)"/>
+						<use xlink:href="#quarterStrokesDIN41091.4" style="stroke:none" transform="rotate(180, 100, 100)"/>
+						<use xlink:href="#quarterStrokesDIN41091.4" style="stroke:none" transform="rotate(270, 100, 100)"/>
+						<g text-anchor="middle" letter-spacing="-2" font-family="sans-serif" font-size="24px" style="stroke:none">
+							<text x="100" y="30">12</text>
+							<text x="143" y="41">1</text>
+							<text x="171" y="70">2</text>
+							<text x="182" y="109">3</text>
+							<text x="171" y="147">4</text>
+							<text x="142" y="176">5</text>
+							<text x="100" y="188">6</text>
+							<text x="60" y="176">7</text>
+							<text x="30" y="147">8</text>
+							<text x="18" y="109">9</text>
+							<text x="34" y="70">10</text>
+							<text x="61" y="41">11</text>
+						</g>
+					</g>
+				</g>
+			</g>
+		</svg>
+		<x-knob id="clock-seconds" divisions="60" value="0" svgsymbolid="secondHandDIN41071.2"></x-knob>
+		<x-knob id="clock-minutes" divisions="60" value="0" svgsymbolid="minuteHandSiemens"></x-knob>
+		<x-knob id="clock-hours"   divisions="0"  value="0" svgsymbolid="hourHandSiemens"></x-knob>
+		<svg viewBox="0 0 200 200" style="pointer-events: none;">
+			<!-- axis cover -->
+			<g id="axisCover" style="pointer-events: auto;">
+				<circle id="axisCoverCircle" cx="100" cy="100" r="10" style="stroke:none"/>
+			</g>
+		</svg>
+	</span>
+	<span id="clock-output">
+		The time is <output id="clock-hours-output">0</output> hours, <output id="clock-minutes-output">0</output> minutes, <output id="clock-seconds-output">0</output> seconds.
+	</span>
+</p>
+
+<script type="text/javascript">
+document.getElementById('clock-example').addEventListener('input', function(ev) {
+	var hand_seconds = document.getElementById('clock-seconds');
+	var hand_minutes = document.getElementById('clock-minutes');
+	var hand_hours = document.getElementById('clock-hours');
+
+	var seconds = Math.floor(hand_seconds.value * 60);
+	var minutes = Math.floor(hand_minutes.value * 60);
+	var hours = Math.floor(hand_hours.value * 12);
+
+	if (seconds < 0 || seconds >= 60) {
+		minutes += Math.floor(seconds / 60);
+		seconds -= Math.floor(seconds / 60) * 60;
+		hand_seconds.value = seconds / 60;
+	}
+	if (minutes < 0 || minutes >= 60) {
+		hours += Math.floor(minutes / 60);
+		minutes -= Math.floor(minutes / 60) * 60;
+		hand_minutes.value = minutes / 60;
+	}
+	hours = ((hours % 12) + 12) % 12;
+
+	console.assert(seconds >=0 && seconds < 60 && minutes >=0 && minutes < 60 && hours >=0 && hours < 12, {'hours': hours, 'minutes': minutes, 'seconds': seconds});
+
+	if (ev.target !== hand_hours) {
+		hand_hours.value = (hours + (minutes / 60)) / 12;
+	}
+	if (ev.target !== hand_minutes) {
+		hand_minutes.value = minutes / 60;
+	}
+	if (ev.target !== hand_seconds) {
+		hand_seconds.value = seconds / 60;
+	}
+
+	document.getElementById('clock-hours-output').value = hours === 0 ? 12 : hours;
+	document.getElementById('clock-minutes-output').value = minutes;
+	document.getElementById('clock-seconds-output').value = seconds;
+});
+document.getElementById('clock-hours').addEventListener('change', function(ev) {
+	var hand_minutes = document.getElementById('clock-minutes');
+	var hand_hours = document.getElementById('clock-hours');
+
+	var minutes = Math.floor(hand_minutes.value * 60);
+	var hours = Math.floor(hand_hours.value * 12);
+
+	hand_hours.value = (hours + (minutes / 60)) / 12;
+});
+document.getElementById('clock-example').addEventListener('change', function(ev) {
+	console.log(ev.type + ' on ' + ev.target.id);
+});
+
+window.addEventListener('load', function() {
+	// Must be after the document is loaded because of webcomponentsjs polyfill.
+	document.getElementById('clock-seconds').value = 42 / 60;
+	document.getElementById('clock-minutes').value = 9 / 60;
+	document.getElementById('clock-hours').value = (10 + (9 / 60)) / 12;
+	document.getElementById('clock-hours').dispatchEvent(new Event('input', {'bubbles': true}));
+});
+</script>
+
 </body>
 </html>
