@@ -12,14 +12,15 @@ This component has been created as a proof-of-concept, as a simple base that can
 Features:
 
 * Pure JavaScript code, no libraries used.
+* Customizable graphics using SVG.
 * Supports mouse input and touch input.
     * But does not support multiple fingers.
 * Uses cutting-edge technology: [HTML5](http://www.html5rocks.com/) [Web Components](http://www.w3.org/wiki/WebComponents/) with [Shadow DOM](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/) and [Custom element](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/).
     * [Works](http://webcomponents.org/) on Google Chrome and Opera.
     * [Does not work](http://webcomponents.org/) on Firefox, Safari, IE, Edge.
-    * Using [webcomponentsjs](https://github.com/webcomponents/webcomponentsjs/releases) as a set of polyfills and adding [`shim-shadowdom` to the CSS](https://github.com/Polymer/docs/issues/269) improves the compatibility and makes it work correctly on Firefox.
-* Not production-ready!
-    * Unless the incompatibilities can be ignored.
+    * Using [webcomponentsjs](https://github.com/webcomponents/webcomponentsjs/releases) as a set of polyfills and adding [`shim-shadowdom` to the CSS](https://github.com/Polymer/docs/issues/269) improves the compatibility and makes it work correctly on Firefox. Unsure about other browsers.
+* Most likely not production-ready!
+    * Unless the incompatibilities and limitations can be ignored.
 * Excellent example for learning the new web technologies.
 
 
