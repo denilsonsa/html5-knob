@@ -161,17 +161,17 @@ if (!window.XKnob) {
 						this._divisions = 0;
 						this._min = null;
 						this._max = null;
-						this._svgusehref = null;
+						this._svgsymbolid = null;
 						this._value = 0;
 
 						// Setting values from attributes.
-						for (var attr of ['divisions', 'min', 'max', 'svgusehref', 'value']) {
+						for (var attr of ['divisions', 'min', 'max', 'svgsymbolid', 'value']) {
 							if (this.hasAttribute(attr)) {
 								this[attr] = this.getAttribute(attr);
 							}
 						}
 
-						if (this._svgusehref === null) {
+						if (this._svgsymbolid === null) {
 							this._update_innerHTML();
 						}
 					}
@@ -179,7 +179,7 @@ if (!window.XKnob) {
 				'attributeChangedCallback' : {
 					'value': function(attrName, oldVal, newVal) {
 						attrName = attrName.toLowerCase();
-						if (['divisions', 'min', 'max', 'svgusehref', 'value'].indexOf(attrName) > -1) {
+						if (['divisions', 'min', 'max', 'svgsymbolid', 'value'].indexOf(attrName) > -1) {
 							this[attrName] = newVal;
 						}
 					}
@@ -214,12 +214,19 @@ if (!window.XKnob) {
 						this._update_value();
 					}
 				},
-				'svgusehref': {
+				'svgsymbolid': {
 					'get': function() {
-						return this._svgusehref;
+						return this._svgsymbolid;
 					},
 					'set': function(x) {
-						this._svgusehref = '' + x;
+						x = '' + x;  // Forcing conversion to string.
+						// https://stackoverflow.com/questions/70579/what-are-valid-values-for-the-id-attribute-in-html
+						// http://www.w3.org/TR/html4/types.html#type-id
+						if (/^[A-Za-z][-A-Za-z0-9_:.]*$/.test(x)) {
+							this._svgsymbolid = x;
+						} else {
+							this._svgsymbolid = null;
+						}
 						this._update_innerHTML();
 					}
 				},
@@ -238,22 +245,37 @@ if (!window.XKnob) {
 						if (!this.shadowRoot) {
 							this.createShadowRoot();
 						}
-						if (this._svgusehref) {
-							this.shadowRoot.innerHTML = '' +
-								'<svg viewBox="-1 -1 2 2" style="display: block; width: 100%; height: 100%;">' +
-								'  <circle class="knob_center" cx="0" cy="0" r="0.015625" fill="none" opacity="0" pointer-events="none" />' +
-								'  <use class="knob_gfx" xlink:href="' + encodeURI(this._svgusehref) + '" x="0" y="0" width="2" height="2">' +
-								'  </g>' +
-								'</svg>';
+
+						var symbol = null;
+						if (this._svgsymbolid) {
+							symbol = this.ownerDocument.getElementById(this._svgsymbolid);
+							if (symbol && symbol.tagName.toLowerCase() === 'symbol') {
+								symbol = symbol.cloneNode(true);
+							} else {
+								symbol = null;
+							}
+						}
+						var id = 'default_x-knob_gfx'
+						if (symbol) {
+							id = symbol.getAttribute('id');
+						}
+
+						this.shadowRoot.innerHTML = '' +
+							'<svg viewBox="-1 -1 2 2" style="display: block; width: 100%; height: 100%; pointer-events: none;">' +
+							'  <defs></defs>' +
+							'  <circle class="knob_center" cx="0" cy="0" r="0.0078125" fill="none" opacity="0" pointer-events="none"/>' +
+							'  <use class="knob_gfx" xlink:href="#' + id + '" x="-1" y="-1" width="2" height="2" style="pointer-events: auto;"/>' +
+							'  </g>' +
+							'</svg>';
+
+						if (symbol) {
+							this.shadowRoot.querySelector('defs').appendChild(symbol);
 						} else {
-							this.shadowRoot.innerHTML = '' +
-								'<svg viewBox="-6 -6 12 12" style="display: block; width: 100%; height: 100%;">' +
-								'  <circle class="knob_center" cx="0" cy="0" r="0.015625" fill="none" opacity="0" pointer-events="none" />' +
-								'  <g class="knob_gfx">' +
-								'    <circle cx="0" cy="0" r="5" stroke="#2e3436" fill="#babdb6" stroke-width="0.25"/>' +
-								'    <line x1="0" y1="-1.25" x2="0" y2="-4.5" stroke="#2e3436" stroke-width="0.5px" stroke-linecap="round"/>' +
-								'  </g>' +
-								'</svg>';
+							this.shadowRoot.querySelector('defs').innerHTML = '' +
+								'<symbol id="default_x-knob_gfx" viewBox="-6 -6 12 12">' +
+								'  <circle cx="0" cy="0" r="5" stroke="#2e3436" fill="#babdb6" stroke-width="0.25"/>' +
+								'  <line x1="0" y1="-1.25" x2="0" y2="-4.5" stroke="#2e3436" stroke-width="0.5px" stroke-linecap="round"/>' +
+								'</symbol>';
 						}
 
 						this.shadowRoot.querySelector('.knob_gfx').addEventListener('mousedown', start_dragging);
