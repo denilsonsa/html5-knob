@@ -7,25 +7,3 @@ x-knob {
 	width: 2em;
 	height: 2em;
 }
-
-/* Default colors, based on Tango palette. */
-x-knob::shadow .knob_gfx circle { stroke: #2e3436; fill: #babdb6; stroke-width: 0.25px; }
-x-knob::shadow .knob_gfx line   { stroke: #2e3436;                stroke-width: 0.5px; stroke-linecap: round; }
-
-
-/********************************************************/
-/* The styles below this line don't need to be touched. */
-
-x-knob::shadow > svg {
-	display: block;
-	width: 100%;
-	height: 100%;
-}
-
-/* Invisible element used to get the X,Y coordinates. */
-x-knob::shadow > svg .knob_center {
-	stroke: none;
-	fill: none;
-	opacity: 0;
-	pointer-events: none;
-}

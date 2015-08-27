@@ -5,6 +5,8 @@
 <title>HTML5 &lt;x-knob&gt; rotating knob web component</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<!--script src="webcomponentsjs-0.7.12/webcomponents.min.js" type="text/javascript"></script-->
+
 <script src="xknob.js" type="text/javascript" async></script>
 <link href="xknob.css" type="text/css" rel="stylesheet">
 
@@ -36,6 +38,21 @@ p:target {
 #styling x-knob:nth-child(1):hover::shadow .knob_gfx circle { fill: #ad7fa8; }
 </style>
 
+<svg style="display: none;">
+	<defs>
+		<symbol id="plain-line" viewBox="-6 -6 12 12">
+			<!-- Colors from Tango palette -->
+			<circle cx="0" cy="0" r="5" stroke="#2e3436" fill="#babdb6" stroke-width="0.25"/>
+			<line x1="0" y1="-1.25" x2="0" y2="-4.5" stroke="#2e3436" stroke-width="0.5px" stroke-linecap="round"/>
+		</symbol>
+		<symbol id="plain-dot" viewBox="-6 -6 12 12">
+			<!-- Colors from Tango palette -->
+			<circle cx="0" cy="0" r="5" stroke="#2e3436" fill="#babdb6" stroke-width="0.25"/>
+			<circle cx="0" cy="-4.5" r="0.5" stroke="none" fill="#2e3436"/>
+		</symbol>
+	</defs>
+</svg>
+
 </head>
 <body>
 
@@ -44,7 +61,7 @@ p:target {
 <!-- I'm sorry I'm using a table for layout. But my intent is to demonstrate the knob, not the table. -->
 <table id="bigdemo">
 	<tr>
-		<td rowspan="4"><x-knob id="big"></x-knob></td>
+		<td rowspan="5"><x-knob id="big"></x-knob></td>
 		<td><code>divisions</code></td>
 		<td><input type="number" id="bigdivisions" min="0" step="1" value="0" title="Accepts integers starting from 2. Any other value is ignored."></td>
 	</tr>
@@ -55,6 +72,14 @@ p:target {
 	<tr>
 		<td><code>max</code></td>
 		<td><input type="number" id="bigmax" step="any" value="" title="Any float, or null/empty for not having a limit."></td>
+	</tr>
+	<tr>
+		<td><code>svgusehref</code></td>
+		<td><select id="bigsvgusehref">
+			<option value="" selected>&lt;empty&gt;</option>
+			<option value="#plain-line">#plain-line</option>
+			<option value="#plain-dot">#plain-dot</option>
+		</select></td>
 	</tr>
 	<tr>
 		<td><code>value</code></td>
@@ -81,7 +106,7 @@ p:target {
 <script type="text/javascript">
 
 document.getElementById('bigdemo').addEventListener('input', function(ev) {
-	if (['bigdivisions', 'bigmin', 'bigmax', 'bigvalue'].indexOf(ev.target.id) > -1) {
+	if (['bigdivisions', 'bigmin', 'bigmax', 'bigsvgusehref', 'bigvalue'].indexOf(ev.target.id) > -1) {
 		var attr = ev.target.id.replace('big', '');
 		document.getElementById('big')[attr] = ev.target.value;
 	}
