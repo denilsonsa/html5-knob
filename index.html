@@ -24,6 +24,10 @@ html, body {
 	background: white;
 	color: black;
 }
+h2 {
+	border-top: 1px solid black;
+	margin: 2em 0 1ex;
+}
 p:target {
 	background: #eeeeec;
 }
@@ -232,13 +236,19 @@ table#bigdemo th {
 </head>
 <body>
 
+<h1><code>&lt;x-knob&gt;</code> Web Component</h1>
+
+<p><a href="https://github.com/denilsonsa/html5-knob">View this project on GitHub!</a></p>
+
 <script type="text/javascript">
 if (window.WebComponents) {
 	document.writeln('<p>Note: <code>document.registerElement()</code> not detected, enabling the <a href="https://github.com/webcomponents/webcomponentsjs/releases">webcomponentsjs</a> polyfill.</p>');
 }
 </script>
 
-<p><a href="https://github.com/denilsonsa/html5-knob">View this project on GitHub!</a></p>
+<h2>Playaround demo</h2>
+
+<p>A demo with a single <code>&lt;x-knob&gt;</code> element with all attributes exposed. It's easy to get a feel on how it works by just interacting with this demo.</p>
 
 <!-- I'm sorry I'm using a table for layout. But my intent is to demonstrate the knob, not the table. -->
 <table id="bigdemo">
@@ -314,28 +324,6 @@ if (window.WebComponents) {
 	</tr>
 </table>
 
-<hr>
-
-<p id="simple"><x-knob></x-knob> Simplest markup "just works" with some reasonable defaults. It only requires importing <code>xknob.js</code> and <code>xknob.css</code>.</p>
-
-<p id="sizes"><x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> SVG graphics adapting to any size. Also means the click region is precisely the graphic itself, and nothing else.</p>
-
-<p id="gfx"><x-knob svgsymbolid="circle-with-dot"></x-knob> <x-knob svgsymbolid="long-stick"></x-knob> <x-knob svgsymbolid="arrow"></x-knob> A custom SVG graphic can be selected by passing an <code>id</code> of an SVG <code>&lt;symbol&gt;</code> available from within the same document. The symbol will be (deep-)copied into the shadow DOM of the <code>x-knob</code> element. Symbols from external files are not supported.</p>
-
-<p id="events"><x-knob id="eventsdemo"></x-knob> Supports <code>input</code> event (value = <output id="oninputvalue"></output>) and <code>change</code> event (value = <output id="onchangevalue"></output>).</p>
-
-<p id="bubbling"><x-knob data-name="first knob"></x-knob> <x-knob data-name="second knob"></x-knob> The events bubble correctly: <output id="bubblingoutput"></output></p>
-
-<p id="snap"><x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> Optionally snaps the knob to discrete rotations. <output id="snapoutput"></output></p>
-
-<p id="transition"><x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> CSS transitions work fine together with discrete rotations, but don't look good on a continuous (analog) knob. <x-knob></x-knob></p>
-
-<p id="minmax"><x-knob min="-1" max="1"></x-knob> <x-knob min="0"></x-knob> <x-knob max="2"></x-knob> <x-knob min="-0.3333" max="0.3333"></x-knob> Has support for <code>min</code> and <code>max</code> attributes. <output id="minmaxoutput"></output></p>
-
-<p id="attrs"><input id="attrsdivisions" type="number" min="2" step="1" value="8" style="width: 4em" title="divisions"> <x-knob id="attrsmin" value="-1" title="min"></x-knob> <x-knob id="attrsmax" value="1" title="max"></x-knob> <x-knob id="attrsvalue"></x-knob> All attributes (<code>divisions</code>, <code>min</code>, <code>max</code>, <code>svgsymbolid</code>, <code>value</code>) can be set using standard DOM methods (such as <code>setAttribute()</code>) or directly to the object. <x-knob id="attrsdom"></x-knob> <x-knob id="attrsdirect"></x-knob></p>
-
-<p id="updatingvalue"><x-knob divisions="0"></x-knob> <x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> Updating the <code>value</code> of a knob that is being rotated may cause drifting. <output id="updatingvalueoutput"></output></p>
-
 <script type="text/javascript">
 
 document.getElementById('bigdemo').addEventListener('input', function(ev) {
@@ -365,63 +353,11 @@ Array.prototype.forEach.call(
 	}
 );
 
-
-var eventsdemo = document.getElementById('eventsdemo');
-eventsdemo.addEventListener('input', function(ev) {
-	document.getElementById('oninputvalue').value = ev.target.value;
-});
-eventsdemo.addEventListener('change', function(ev) {
-	document.getElementById('onchangevalue').value = ev.target.value;
-});
-
-
-var bubbling = document.getElementById('bubbling');  // This is the <p> element.
-var bubbling_handler = function(ev) {
-	document.getElementById('bubblingoutput').value = ev.type + ' on ' + ev.target.dataset.name;
-};
-bubbling.addEventListener('input', bubbling_handler);
-bubbling.addEventListener('change', bubbling_handler);
-
-
-document.getElementById('snap').addEventListener('input', function(ev) {
-	document.getElementById('snapoutput').value = Array.prototype.map.call(
-		ev.currentTarget.querySelectorAll('x-knob'),
-		function(x) { return x.value.toFixed(2); }
-	).join(' | ');
-});
-
-
-document.getElementById('minmax').addEventListener('input', function(ev) {
-	document.getElementById('minmaxoutput').value = Array.prototype.map.call(
-		ev.currentTarget.querySelectorAll('x-knob'),
-		function(x) { return x.value.toFixed(2); }
-	).join(' | ');
-});
-
-
-document.getElementById('attrs').addEventListener('input', function(ev) {
-	if (['attrsdivisions', 'attrsmin', 'attrsmax', 'attrsvalue'].indexOf(ev.target.id) > -1) {
-		var attr = ev.target.id.replace('attrs', '');
-		document.getElementById('attrsdom').setAttribute(attr, ev.target.value);
-		document.getElementById('attrsdirect')[attr] = ev.target.value;
-	}
-});
-
-
-document.getElementById('updatingvalue').addEventListener('input', function(ev) {
-	// Since .value has a setter function, the following line may cause side-effects.
-	ev.target.value = ev.target.value;
-	document.getElementById('updatingvalueoutput').value = Array.prototype.map.call(
-		ev.currentTarget.querySelectorAll('x-knob'),
-		function(x) { return x.value.toFixed(2); }
-	).join(' | ');
-});
-
 </script>
 
-<hr>
+<h2>Interactive clock demo</h2>
 
-<p>Finally, a more realistic and complex demonstration. The clock graphic is from <a href="http://www.3quarks.com/en/SVGClock/">"SVG Railway Station Clock" by Rüdiger Appel</a>. Each hand is a <code>&lt;x-knob&gt;</code> element.</p>
+<p>A more realistic and complex demonstration. Click/touch each clock hand and drag them around. The clock graphic is from <a href="http://www.3quarks.com/en/SVGClock/">"SVG Railway Station Clock" by Rüdiger Appel</a>. Each hand is a <code>&lt;x-knob&gt;</code> element.</p>
 
 <p id="clock-example">
 	<span id="clock-block">
@@ -568,6 +504,85 @@ window.addEventListener('load', function() {
 	document.getElementById('clock-hours').value = (10 + (9 / 60)) / 12;
 	document.getElementById('clock-hours').dispatchEvent(new Event('input', {'bubbles': true}));
 });
+</script>
+
+<h2>Misc. demos</h2>
+
+<p>Several small demonstrations trying to showcase specific features or behaviors.</p>
+
+<p id="simple"><x-knob></x-knob> Simplest markup "just works" with some reasonable defaults. It only requires importing <code>xknob.js</code> and <code>xknob.css</code>.</p>
+
+<p id="sizes"><x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> SVG graphics adapting to any size. Also means the click region is precisely the graphic itself, and nothing else.</p>
+
+<p id="gfx"><x-knob svgsymbolid="circle-with-dot"></x-knob> <x-knob svgsymbolid="long-stick"></x-knob> <x-knob svgsymbolid="arrow"></x-knob> A custom SVG graphic can be selected by passing an <code>id</code> of an SVG <code>&lt;symbol&gt;</code> available from within the same document. The symbol will be (deep-)copied into the shadow DOM of the <code>x-knob</code> element. Symbols from external files are not supported.</p>
+
+<p id="events"><x-knob id="eventsdemo"></x-knob> Supports <code>input</code> event (value = <output id="oninputvalue"></output>) and <code>change</code> event (value = <output id="onchangevalue"></output>).</p>
+
+<p id="bubbling"><x-knob data-name="first knob"></x-knob> <x-knob data-name="second knob"></x-knob> The events bubble correctly: <output id="bubblingoutput"></output></p>
+
+<p id="snap"><x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> Optionally snaps the knob to discrete rotations. <output id="snapoutput"></output></p>
+
+<p id="transition"><x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> CSS transitions work fine together with discrete rotations, but don't look good on a continuous (analog) knob. <x-knob></x-knob></p>
+
+<p id="minmax"><x-knob min="-1" max="1"></x-knob> <x-knob min="0"></x-knob> <x-knob max="2"></x-knob> <x-knob min="-0.3333" max="0.3333"></x-knob> Has support for <code>min</code> and <code>max</code> attributes. <output id="minmaxoutput"></output></p>
+
+<p id="attrs"><input id="attrsdivisions" type="number" min="2" step="1" value="8" style="width: 4em" title="divisions"> <x-knob id="attrsmin" value="-1" title="min"></x-knob> <x-knob id="attrsmax" value="1" title="max"></x-knob> <x-knob id="attrsvalue"></x-knob> All attributes (<code>divisions</code>, <code>min</code>, <code>max</code>, <code>svgsymbolid</code>, <code>value</code>) can be set using standard DOM methods (such as <code>setAttribute()</code>) or directly to the object. <x-knob id="attrsdom"></x-knob> <x-knob id="attrsdirect"></x-knob></p>
+
+<p id="updatingvalue"><x-knob divisions="0"></x-knob> <x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> Updating the <code>value</code> of a knob that is being rotated may cause drifting. <output id="updatingvalueoutput"></output></p>
+
+<script type="text/javascript">
+
+var eventsdemo = document.getElementById('eventsdemo');
+eventsdemo.addEventListener('input', function(ev) {
+	document.getElementById('oninputvalue').value = ev.target.value;
+});
+eventsdemo.addEventListener('change', function(ev) {
+	document.getElementById('onchangevalue').value = ev.target.value;
+});
+
+
+var bubbling = document.getElementById('bubbling');  // This is the <p> element.
+var bubbling_handler = function(ev) {
+	document.getElementById('bubblingoutput').value = ev.type + ' on ' + ev.target.dataset.name;
+};
+bubbling.addEventListener('input', bubbling_handler);
+bubbling.addEventListener('change', bubbling_handler);
+
+
+document.getElementById('snap').addEventListener('input', function(ev) {
+	document.getElementById('snapoutput').value = Array.prototype.map.call(
+		ev.currentTarget.querySelectorAll('x-knob'),
+		function(x) { return x.value.toFixed(2); }
+	).join(' | ');
+});
+
+
+document.getElementById('minmax').addEventListener('input', function(ev) {
+	document.getElementById('minmaxoutput').value = Array.prototype.map.call(
+		ev.currentTarget.querySelectorAll('x-knob'),
+		function(x) { return x.value.toFixed(2); }
+	).join(' | ');
+});
+
+
+document.getElementById('attrs').addEventListener('input', function(ev) {
+	if (['attrsdivisions', 'attrsmin', 'attrsmax', 'attrsvalue'].indexOf(ev.target.id) > -1) {
+		var attr = ev.target.id.replace('attrs', '');
+		document.getElementById('attrsdom').setAttribute(attr, ev.target.value);
+		document.getElementById('attrsdirect')[attr] = ev.target.value;
+	}
+});
+
+
+document.getElementById('updatingvalue').addEventListener('input', function(ev) {
+	// Since .value has a setter function, the following line may cause side-effects.
+	ev.target.value = ev.target.value;
+	document.getElementById('updatingvalueoutput').value = Array.prototype.map.call(
+		ev.currentTarget.querySelectorAll('x-knob'),
+		function(x) { return x.value.toFixed(2); }
+	).join(' | ');
+});
+
 </script>
 
 </body>
