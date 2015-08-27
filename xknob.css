@@ -6,4 +6,14 @@ x-knob {
 	display: inline-block;
 	width: 2em;
 	height: 2em;
+
+	/* An internal element is target of pointer-events, but not this external x-knob element. */
+	pointer-events: none;
 }
+
+/*
+This only looks good if divisions >= 2.
+x-knob::shadow .knob_gfx {
+	transition: 200ms transform;
+}
+*/
