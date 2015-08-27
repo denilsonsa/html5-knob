@@ -43,7 +43,7 @@ if (!window.XKnob) {
 		// Event handling functions.
 
 		var add_listeners_to_document = function(elem) {
-			if (document.body instanceof HTMLElement) {
+			if (elem instanceof HTMLElement) {
 				elem = elem.ownerDocument;
 			}
 			// Duplicate event listeners are discarded.
@@ -53,7 +53,7 @@ if (!window.XKnob) {
 			elem.addEventListener('touchmove', drag_rotate);
 		}
 		var remove_listeners_from_document = function(elem) {
-			if (document.body instanceof HTMLElement) {
+			if (elem instanceof HTMLElement) {
 				elem = elem.ownerDocument;
 			}
 			elem.removeEventListener('mouseup', stop_dragging);
