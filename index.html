@@ -319,6 +319,8 @@ if (window.WebComponents) {
 
 <p id="attrs"><input id="attrsdivisions" type="number" min="2" step="1" value="8" style="width: 4em" title="divisions"> <x-knob id="attrsmin" value="-1" title="min"></x-knob> <x-knob id="attrsmax" value="1" title="max"></x-knob> <x-knob id="attrsvalue"></x-knob> All attributes (<code>divisions</code>, <code>min</code>, <code>max</code>, <code>svgsymbolid</code>, <code>value</code>) can be set using standard DOM methods (such as <code>setAttribute()</code>) or directly to the object. <x-knob id="attrsdom"></x-knob> <x-knob id="attrsdirect"></x-knob></p>
 
+<p id="updatingvalue"><x-knob divisions="0"></x-knob> <x-knob divisions="2"></x-knob> <x-knob divisions="3"></x-knob> <x-knob divisions="4"></x-knob> <x-knob divisions="8"></x-knob> <x-knob divisions="16"></x-knob> Updating the <code>value</code> of a knob that is being rotated may cause drifting. <output id="updatingvalueoutput"></output></p>
+
 <script type="text/javascript">
 
 document.getElementById('bigdemo').addEventListener('input', function(ev) {
@@ -388,6 +390,16 @@ document.getElementById('attrs').addEventListener('input', function(ev) {
 		document.getElementById('attrsdom').setAttribute(attr, ev.target.value);
 		document.getElementById('attrsdirect')[attr] = ev.target.value;
 	}
+});
+
+
+document.getElementById('updatingvalue').addEventListener('input', function(ev) {
+	// Since .value has a setter function, the following line may cause side-effects.
+	ev.target.value = ev.target.value;
+	document.getElementById('updatingvalueoutput').value = Array.prototype.map.call(
+		ev.currentTarget.querySelectorAll('x-knob'),
+		function(x) { return x.value.toFixed(2); }
+	).join(' | ');
 });
 
 </script>
@@ -477,6 +489,13 @@ document.getElementById('attrs').addEventListener('input', function(ev) {
 </p>
 
 <script type="text/javascript">
+// If you want to avoid drifiting, try the following algorithm:
+//
+// 1. Store hours/minutes/seconds in some variable.
+// 2. At `input` event handler, never update the knob that triggered the event.
+// 3. Instead of clamping the current knob value to 0..1 range, don't change it.
+// 4. When calculating the overflow/underflow of seconds or minutes, use the last saved value plus the knob value.
+// 5. At `change` event handler, update the hours/minutes/seconds variable.
 document.getElementById('clock-example').addEventListener('input', function(ev) {
 	var hand_seconds = document.getElementById('clock-seconds');
 	var hand_minutes = document.getElementById('clock-minutes');
@@ -489,12 +508,12 @@ document.getElementById('clock-example').addEventListener('input', function(ev) 
 	if (seconds < 0 || seconds >= 60) {
 		minutes += Math.floor(seconds / 60);
 		seconds -= Math.floor(seconds / 60) * 60;
-		hand_seconds.value = seconds / 60;
+		hand_seconds.value = seconds / 60;  // Subtle drifting!
 	}
 	if (minutes < 0 || minutes >= 60) {
 		hours += Math.floor(minutes / 60);
 		minutes -= Math.floor(minutes / 60) * 60;
-		hand_minutes.value = minutes / 60;
+		hand_minutes.value = minutes / 60;  // Subtle drifting!
 	}
 	hours = ((hours % 12) + 12) % 12;
 

@@ -138,10 +138,16 @@ if (!window.XKnob) {
 
 			var delta_value = delta_angle / Math.PI / 2;
 			var new_proposed_value = xknob_drag_previous_value + delta_value;
+			var old_actual_value = xknob_being_dragged.value;
+
+			xknob_being_dragged.value = new_proposed_value;
+
+			// The .value setter changes the xknob_drag_previous_value variable
+			// (in case the setter was implicitly called by the user).
+			// Here, however, we need xknob_drag_previous_value set to this
+			// specific value, so we overwrite it.
 			xknob_drag_previous_value = new_proposed_value;
 
-			var old_actual_value = xknob_being_dragged.value;
-			xknob_being_dragged.value = new_proposed_value;
 			var new_actual_value = xknob_being_dragged.value;
 			if (old_actual_value !== new_actual_value) {
 				xknob_being_dragged.dispatchEvent(new Event('input', {
@@ -302,6 +308,18 @@ if (!window.XKnob) {
 						if (Number.isFinite(this._min) && this._value < this._min) {
 							this._value = this._min;
 						}
+
+						// If the element being dragged had .value updated by the user.
+						//
+						// Note: This may cause drifting, may cause the knob
+						// moving a further away or behind the cursor. The only
+						// way to avoid drifting is by NOT updating .value
+						// while the control is being dragged.
+						if (this === xknob_being_dragged) {
+							// Please also read the comment inside drag_rotate() function.
+							xknob_drag_previous_value = this._value;
+						}
+
 						this._update_gfx_rotation();
 					}
 				},
