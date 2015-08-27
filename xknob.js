@@ -270,7 +270,8 @@ if (!window.XKnob) {
 							'<svg viewBox="-1 -1 2 2" style="display: block; width: 100%; height: 100%; pointer-events: none;">' +
 							'  <defs></defs>' +
 							'  <circle class="knob_center" cx="0" cy="0" r="0.0078125" fill="none" opacity="0" pointer-events="none"/>' +
-							'  <use class="knob_gfx" xlink:href="#' + id + '" x="-1" y="-1" width="2" height="2" style="pointer-events: auto;"/>' +
+							// https://stackoverflow.com/questions/826782/css-rule-to-disable-text-selection-highlighting
+							'  <use class="knob_gfx" xlink:href="#' + id + '" x="-1" y="-1" width="2" height="2" style="cursor: default; pointer-events: auto; -webkit-touch-callout: none; -ms-user-select: none; -moz-user-select: none; -webkit-user-select: none; user-select: none;"/>' +
 							'  </g>' +
 							'</svg>';
 
