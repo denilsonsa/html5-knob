@@ -61,8 +61,8 @@ table#bigdemo th {
 #big {
 	display: block;
 	position: relative;
-	width: 12em;
-	height: 12em;
+	width: 13em;
+	height: 13em;
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-position: center center;
@@ -292,7 +292,7 @@ table#bigdemo th {
 			* Almost works in Firefox 40. Square-shaped opaque background instead of being transparent.
 		* As <use>:
 			* Does not work in Chrome 44. Nothing is displayed. Unsure about the reason.
-			* Works fine in Firefox 40.
+			* Works perfectly in Firefox 40. Precise clickable area.
 		-->
 		<symbol id="driving-wheel-as-image" viewBox="0 0 1 1">
 			<image xlink:href="drivingwheel.svg" x="0" y="0" width="1" height="1"/>
@@ -477,7 +477,7 @@ if (window.WebComponents) {
 <!-- I'm sorry I'm using a table for layout. But my intent is to demonstrate the knob, not the table. -->
 <table id="bigdemo">
 	<tr>
-		<td rowspan="7" id="big_container">
+		<td rowspan="9" id="big_container">
 			<!-- Just a background. -->
 			<svg id="big_bg" viewBox="0 0 1 1"></svg>
 			<!-- This is the main element! -->
@@ -493,6 +493,14 @@ if (window.WebComponents) {
 	<tr>
 		<th><label for="bigmax"><code>max</code></label></th>
 		<td><input type="number" id="bigmax" step="any" value="" title="Any float, or null/empty for not having a limit."></td>
+	</tr>
+	<tr>
+		<th></th>
+		<td><label><input type="checkbox" id="bigdisabled"> <code>disabled</code></td>
+	</tr>
+	<tr>
+		<th></th>
+		<td><label><input type="checkbox" id="bigreadonly"> <code>readonly</code></td>
 	</tr>
 	<tr>
 		<th><label for="bigsvgsymbolid"><code>svgsymbolid</code></label></th>
@@ -561,6 +569,12 @@ document.getElementById('bigdemo').addEventListener('input', function(ev) {
 });
 document.getElementById('bigpadding').addEventListener('click', function(ev) {
 	document.getElementById('big').style.padding = ev.target.checked ? '1em' : '0';
+});
+document.getElementById('bigdisabled').addEventListener('click', function(ev) {
+	document.getElementById('big').disabled = ev.target.checked;
+});
+document.getElementById('bigreadonly').addEventListener('click', function(ev) {
+	document.getElementById('big').readonly = ev.target.checked;
 });
 
 // 'input' event does not fire for <select> in Firefox.
@@ -737,6 +751,8 @@ window.addEventListener('load', function() {
 <p id="simple"><x-knob></x-knob> Simplest markup "just works" with some reasonable defaults. It only requires importing <code>xknob.js</code> and <code>xknob.css</code>.</p>
 
 <p id="sizes"><x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> <x-knob></x-knob> SVG graphics adapting to any size. Also means the click region is precisely the graphic itself, and nothing else.</p>
+
+<p id="disabledreadonly"><x-knob disabled></x-knob> <x-knob readonly></x-knob> <x-knob disabled readonly></x-knob> Attributes <code>disabled</code> and <code>readonly</code> are available, but don't change the look.</p>
 
 <p id="gfx"><x-knob svgsymbolid="circle-with-dot"></x-knob> <x-knob svgsymbolid="long-stick"></x-knob> <x-knob svgsymbolid="arrow"></x-knob> A custom SVG graphic can be selected by passing an <code>id</code> of an SVG <code>&lt;symbol&gt;</code> available from within the same document. The symbol will be (deep-)copied into the shadow DOM of the <code>x-knob</code> element. Symbols from external files are not supported.</p>
 

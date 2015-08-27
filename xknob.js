@@ -83,6 +83,12 @@ if (!window.XKnob) {
 			var xknob = shadow_root.host;
 			if (!xknob) return;
 
+			// No reaction if the element is disabled or readonly.
+			if (xknob.disabled || xknob.readonly) {
+				// Should we call preventDefault/stopPropagation here?
+				return;
+			}
+
 			// Actual event handling.
 			ev.preventDefault();
 			ev.stopPropagation();
@@ -102,6 +108,11 @@ if (!window.XKnob) {
 				return;
 			}
 
+			if (xknob_being_dragged.disabled || xknob_being_dragged.readonly) {
+				remove_listeners_from_document(ev.target);
+				return;
+			}
+
 			if (xknob_drag_initial_value !== xknob_being_dragged.value) {
 				xknob_being_dragged.dispatchEvent(new Event('change', {
 					'bubbles': true,
@@ -117,6 +128,11 @@ if (!window.XKnob) {
 		// outside of XKnob.
 		var drag_rotate = function(ev) {
 			if (!xknob_being_dragged) {
+				remove_listeners_from_document(ev.target);
+				return;
+			}
+
+			if (xknob_being_dragged.disabled || xknob_being_dragged.readonly) {
 				remove_listeners_from_document(ev.target);
 				return;
 			}
@@ -164,6 +180,8 @@ if (!window.XKnob) {
 				'createdCallback': {
 					'value': function() {
 						// Default values for private vars.
+						this._disabled = false;
+						this._readonly = false;
 						this._divisions = 0;
 						this._min = null;
 						this._max = null;
@@ -174,6 +192,11 @@ if (!window.XKnob) {
 						for (var attr of ['divisions', 'min', 'max', 'svgsymbolid', 'value']) {
 							if (this.hasAttribute(attr)) {
 								this[attr] = this.getAttribute(attr);
+							}
+						}
+						for (var attr of ['disabled', 'readonly']) {
+							if (this.hasAttribute(attr)) {
+								this[attr] = true;
 							}
 						}
 
@@ -187,12 +210,35 @@ if (!window.XKnob) {
 						attrName = attrName.toLowerCase();
 						if (['divisions', 'min', 'max', 'svgsymbolid', 'value'].indexOf(attrName) > -1) {
 							this[attrName] = newVal;
+						} else if (['disabled', 'readonly'].indexOf(attrName) > -1) {
+							if (newVal === null) {
+								// Attribute has been removed.
+								this[attrName] = false;
+							} else {
+								this[attrName] = true;
+							}
 						}
 					}
 				},
 
 				// HTMLInputElement-inspired properties.
 				// Upon getting, returns a number (or null) instead of a string.
+				'disabled': {
+					'get': function() {
+						return this._disabled;
+					},
+					'set': function(x) {
+						this._disabled = !!x;
+					}
+				},
+				'readonly': {
+					'get': function() {
+						return this._readonly;
+					},
+					'set': function(x) {
+						this._readonly = !!x;
+					}
+				},
 				'divisions': {
 					'get': function() {
 						return this._divisions;
