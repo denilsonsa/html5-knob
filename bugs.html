@@ -145,7 +145,7 @@ if (window.WebComponents) {
 
 
 <section id="bug-chromatic-wheel">
-<h2><a href="">Firefox bug 1</a>: Incorrect SVG text rendering when font-size is effectively smaller than 8px</h2>
+<h2><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1199538">Firefox bug 1199538</a>: Incorrect SVG text rendering when font-size is effectively smaller than 8px</h2>
 
 <p>Each graphic below has width and height set to <output class="bug-chromatic-wheel-size-output"></output>px. Internally, the SVG <code>viewBox</code> dimensions are 10x10, and the text <code>font-size</code> is <code>0.4px</code>. Doing the math, this the actual <code>font-size</code> in document pixels is <output class="bug-chromatic-wheel-font-size-output"></output>px. If this number is smaller than 8px, then text rendering in Firefox is completely broken, with all characters drawn on top of each other. Sometimes (depending on the rotation) the characters is drawn at the wrong location.</p>
 
