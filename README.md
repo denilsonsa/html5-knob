@@ -59,4 +59,6 @@ The usage of HTML5 custom elements is based on [HTML5 Rocks tutorial](http://www
 
 [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/API) proved to be an extremely valuable resource.
 
+[Web Components the Right Way](https://github.com/mateusortiz/webcomponents-the-right-way) is a very comprehensive list of resources related to Web Components.
+
 [demo]: http://denilsonsa.github.io/html5-knob/

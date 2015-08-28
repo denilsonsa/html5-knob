@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" id="svg" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+    <linearGradient id="linearGradient">
+      <stop stop-color="#0F0" offset="0" />
+      <stop stop-color="#080" offset="1" />
+	</linearGradient>
+	<symbol id="symbol" viewBox="0 0 16 16">
+		<rect x="0" y="0" width="16" height="16" rx="2" ry="2" fill="#AAF"/>
+	</symbol>
+</defs>
+<use xlink:href="#symbol" x="0" y="0" width="16" height="16"/>
+<path id="cross" stroke="red" stroke-width="2" stroke-linecap="square" d="M4,4 l8,8 M12,4 l-8,8"/>
+<circle id="circle" cx="8" cy="8" r="8" fill="url(#linearGradient)"/>
+</svg>
