@@ -326,8 +326,8 @@ if (!window.XKnob) {
 						} else {
 							this.shadowRoot.querySelector('defs').innerHTML = '' +
 								'<symbol id="default_x-knob_gfx" viewBox="-6 -6 12 12">' +
-								'  <circle cx="0" cy="0" r="5" stroke="#2e3436" fill="#babdb6" stroke-width="0.25"/>' +
-								'  <line x1="0" y1="-1.25" x2="0" y2="-4.5" stroke="#2e3436" stroke-width="0.5px" stroke-linecap="round"/>' +
+								'  <circle cx="0" cy="0" r="5.875" stroke="#2e3436" fill="#babdb6" stroke-width="0.25"/>' +
+								'  <line x1="0" y1="-1.5" x2="0" y2="-4.75" stroke="#2e3436" stroke-width="0.5px" stroke-linecap="round"/>' +
 								'</symbol>';
 						}
 
