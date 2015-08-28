@@ -266,8 +266,8 @@ window.addEventListener('load', init_chromatic_wheel);
 
 
 
-<section id="bug-opaque-image-background">
-<h2><a href="">Firefox bug 1</a>: </h2>
+<section id="bug-tinted-image-background">
+<h2><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1199536">Firefox bug 1199536</a>: Tinted image background in external SVG included via SVG &lt;image&gt; tag</h2>
 
 <p>We have an external <a href="drivingwheel.svg">drivingwheel.svg</a> file (<a href="https://openclipart.org/detail/172010/driving-wheel">from Open clipart</a>) that is being included below in several ways.</p>
 
@@ -288,15 +288,15 @@ window.addEventListener('load', init_chromatic_wheel);
 </p>
 
 <style type="text/css">
-#bug-opaque-image-background p.testcase {
+#bug-tinted-image-background p.testcase {
 	background-image: url(drivingwheel.svg);
 	background-size: 32px 32px;
 	background-repeat: repeat-x;
 }
-#bug-opaque-image-background .testcase > x-knob,
-#bug-opaque-image-background .testcase > svg,
-#bug-opaque-image-background .testcase > img,
-#bug-opaque-image-background .testcase > object {
+#bug-tinted-image-background .testcase > x-knob,
+#bug-tinted-image-background .testcase > svg,
+#bug-tinted-image-background .testcase > img,
+#bug-tinted-image-background .testcase > object {
 	display: inline-block;
 	width: 128px;
 	height: 128px;
@@ -308,7 +308,7 @@ window.addEventListener('load', init_chromatic_wheel);
 
 
 <section id="bug-use-external-svg">
-<h2><a href="">Chrome bug 1</a>: &lt;use&gt; does not render correctly if pointing to an external SVG that contains "url(#some_id)"</h2>
+<h2><a href="http://crbug.com/109212">Chrome bug 109212</a>: &lt;use&gt; does not render correctly if pointing to an external SVG that contains "url(#some_id)"</h2>
 
 <p>If we have an external SVG file, we can use <code>&lt;use xlink:href="foo.svg#bar"&gt;</code> to include it (or some elements from it) into an SVG element.</p>
 
