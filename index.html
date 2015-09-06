@@ -595,7 +595,7 @@ Array.prototype.forEach.call(
 
 <h2>Interactive clock demo</h2>
 
-<p>A more realistic and complex demonstration. Click/touch each clock hand and drag them around. The clock graphic is from <a href="http://www.3quarks.com/en/SVGClock/">"SVG Railway Station Clock" by Rüdiger Appel</a>. Each hand is a <code>&lt;x-knob&gt;</code> element.</p>
+<p>A more realistic and complex demonstration. Click/touch each clock hand and drag them around. The clock graphic is from <a href="http://www.3quarks.com/en/SVGClock/">"SVG Railway Station Clock" by Rüdiger Appel</a>. Each hand is a <code>&lt;x-knob&gt;</code> element. (Known issue: the event handlers written for this demo make it impossible to change the hours hand by keyboard.)</p>
 
 <p id="clock-example">
 	<span id="clock-block">
@@ -756,7 +756,7 @@ window.addEventListener('load', function() {
 
 <p id="gfx"><x-knob svgsymbolid="circle-with-dot"></x-knob> <x-knob svgsymbolid="long-stick"></x-knob> <x-knob svgsymbolid="arrow"></x-knob> A custom SVG graphic can be selected by passing an <code>id</code> of an SVG <code>&lt;symbol&gt;</code> available from within the same document. The symbol will be (deep-)copied into the shadow DOM of the <code>x-knob</code> element. Symbols from external files are not supported.</p>
 
-<p id="events"><x-knob id="eventsdemo"></x-knob> Supports <code>input</code> event (value = <output id="oninputvalue"></output>) and <code>change</code> event (value = <output id="onchangevalue"></output>).</p>
+<p id="events"><x-knob id="eventsdemo"></x-knob> Supports <code>input</code> event (value = <output id="oninputvalue"></output>) and <code>change</code> event (value = <output id="onchangevalue"></output>). The <code>change</code> event is triggered if the value has changed after the mouse button is released, after the touch has ended, or after a keyboard press. The <code>input</code> event is triggered immediately.</p>
 
 <p id="bubbling"><x-knob data-name="first knob"></x-knob> <x-knob data-name="second knob"></x-knob> The events bubble correctly: <output id="bubblingoutput"></output></p>
 

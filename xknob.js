@@ -98,6 +98,11 @@ if (!window.XKnob) {
 			xknob_drag_initial_value = xknob.value;
 
 			add_listeners_to_document(xknob);
+
+			// Giving the element focus to enable keyboard events.
+			// We need to do this here because we called preventDefault() and
+			// stopPropagation().
+			xknob.focus();
 		}
 
 		// Should be attached to the document, because this event may happen
@@ -173,12 +178,160 @@ if (!window.XKnob) {
 			}
 		}
 
+		// Keyboard support when receiving focus.
+		var keypress_handler = function(ev) {
+			if (ev.target.disabled) {
+				return;
+			}
+
+			// Some constants.
+			var STEP_SIZE_SMALL = 1;  // For Arrows.
+			var STEP_SIZE_MEDIUM = 2;  // For PageUp/PageDown.
+			var STEP_SIZE_EXTREME = 3;  // For Home/End.
+
+			var step_size = null;
+			var step_direction = null;
+
+			// ev.code and ev.key are new to DOM 3 Events:
+			// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
+			// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
+
+			// If I remap my keyboard (e.g. I've remapped Caps Lock to be
+			// Escape), then ev.key shows the remapped value (e.g. Escape),
+			// while ev.code shows the actual physical key (e.g. Caps Lock).
+			//
+			// Also, if NumLock is off, numpad keys return their alternate
+			// value in ev.key (e.g. ArrowUp), and the actual physical key in
+			// ev.code (e.g. Numpad8).
+			//
+			// For this component, ev.key makes more sense than ev.code, as we
+			// are interested in the logical value/action, and not the physical
+			// key location.
+
+			switch (ev.key) {
+				// The same direction/orientation as <input type="range">.
+				case 'Home':
+				case 'PageDown':
+				case 'ArrowLeft':
+				case 'ArrowDown':
+					step_direction = -1;
+					break;
+				case 'End':
+				case 'PageUp':
+				case 'ArrowRight':
+				case 'ArrowUp':
+					step_direction = +1;
+					break;
+				default:
+					return;
+			}
+			switch (ev.key) {
+				case 'Home':
+				case 'End':
+					step_size = STEP_SIZE_EXTREME;
+					break;
+				case 'PageUp':
+				case 'PageDown':
+					step_size = STEP_SIZE_MEDIUM;
+					break;
+				case 'ArrowRight':
+				case 'ArrowLeft':
+				case 'ArrowDown':
+				case 'ArrowUp':
+					step_size = STEP_SIZE_SMALL;
+					break;
+				default:
+					return;
+			}
+
+			// Sanity check.
+			if (step_size === null || step_direction === null) {
+				console.error('This should not happen! step_size=' + step_size + ', step_direction=' + step_direction);
+				return;
+			}
+
+			ev.preventDefault();
+			//ev.stopPropagation();
+
+			// Read-only will receive and process the events, but won't change
+			// the value.
+			if (ev.target.readonly) {
+				return;
+			}
+
+			var initial_value = ev.target.value;
+
+			if (step_size === STEP_SIZE_EXTREME) {
+				if (step_direction < 0) {
+					if (ev.target.min !== null) {
+						ev.target.value = ev.target.min;
+					}
+				} else if (step_direction > 0) {
+					if (ev.target.max !== null) {
+						ev.target.value = ev.target.max;
+					}
+				}
+			} else if (step_size === STEP_SIZE_MEDIUM) {
+				var divisions = ev.target.divisions;
+				var step = 1.0 / 8;
+				// Finding a step amount near 45deg:
+				if (divisions >= 2) {
+					step = Math.round(step * divisions) / divisions;
+					// In case the previous expression evaluated to zero.
+					step = Math.max(step, 1.0 / divisions);
+				}
+				ev.target.value += step * step_direction;
+			} else if (step_size === STEP_SIZE_SMALL) {
+				var divisions = ev.target.divisions;
+				var step = 1.0 / 64;
+				if (divisions >= 2) {
+					step = 1.0 / divisions;
+				}
+				ev.target.value += step * step_direction;
+			} else {
+				console.error('This should not happen! Unknown step_size: ' + step_size);
+			}
+
+			if (initial_value !== ev.target.value) {
+				ev.target.dispatchEvent(new Event('input', {
+					'bubbles': true,
+					'cancelable': false
+				}));
+				ev.target.dispatchEvent(new Event('change', {
+					'bubbles': true,
+					'cancelable': false
+				}));
+
+				// Trying to improve the corner-case of someone dragging the
+				// control at same time as using keyboard.
+				if (xknob_being_dragged) {
+					xknob_drag_initial_value = ev.target.value;
+				}
+			}
+		}
+
 		////////////////////
 		// The actual XKnob object.
 		var XKnob = document.registerElement('x-knob', {
 			'prototype': Object.create(HTMLElement.prototype, {
 				'createdCallback': {
 					'value': function() {
+						// Making this element focusable.
+						if (!this.hasAttribute('tabindex')) {
+							this.tabIndex = 0;
+						} else {
+							// No action needed, the browser already sets
+							// .tabIndex value to the tabindex attribute.
+						}
+						// Please also check this issue:
+						// https://github.com/whatwg/html/issues/113
+
+						// Specs also mention 'beforeinput' event, but it is
+						// not implemented in browsers, and I don't see why it
+						// would be better than 'keydown'.
+						this.addEventListener('keydown', keypress_handler);
+						// Note: 'keypress' event does not work.
+
 						// Default values for private vars.
 						this._disabled = false;
 						this._readonly = false;
