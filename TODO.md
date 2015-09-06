@@ -15,3 +15,5 @@ TODO: Add to a webcomponents gallery:
 TODO: rename the component to remove the `x-` prefix: http://webcomponents.org/articles/how-should-i-name-my-element/
 
 TODO: Check the "Limitations" from README.md and try to address them.
+
+TODO: Check [Web Components Best Practices](http://webcomponents.org/articles/web-components-best-practices/).
