@@ -19,7 +19,7 @@ Features:
 * Supports keyboard focus and input.
     * But still receives focus despite being `disabled`.
 * Uses cutting-edge technology:
-    * Keyboard key detection through [KeyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key), which requires Chrome 45 or Firefox 23.
+    * Keyboard key detection through [KeyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key), which requires [Chrome later than 45](https://code.google.com/p/chromium/issues/detail?id=227231) or Firefox 23.
     * [HTML5](http://www.html5rocks.com/) [Web Components](http://www.w3.org/wiki/WebComponents/) with [Shadow DOM](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/) and [Custom element](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/).
         * [Works](http://webcomponents.org/) on Google Chrome and Opera.
         * [Does not work](http://webcomponents.org/) on Firefox, Safari, IE, Edge.
