@@ -366,17 +366,12 @@ if (!window.XKnob) {
         return ['divisions', 'min', 'max', 'svgsymbolid', 'value', 'disabled', 'readonly'];
       }
 
-      attributeChangedCallback(attrName) {
+      attributeChangedCallback(attrName, oldValue, newValue) {
         attrName = attrName.toLowerCase();
         if (['divisions', 'min', 'max', 'svgsymbolid', 'value'].indexOf(attrName) > -1) {
-          this[attrName] = newVal;
+          this._update_value();
         } else if (['disabled', 'readonly'].indexOf(attrName) > -1) {
-          if (newVal === null) {
-            // Attribute has been removed.
-            this[attrName] = false;
-          } else {
-            this[attrName] = true;
-          }
+          this._update_value();
         }
       }
 
