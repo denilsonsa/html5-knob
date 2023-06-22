@@ -7,7 +7,7 @@
 
 [![Short demonstration GIF](./video.gif)][demo]
 
-This component has been created as a proof-of-concept, as a simple base that can be improved upon. It is a more polished version of a [previous experiment](http://codepen.io/denilsonsa/pen/LVwWJM).
+This component has been created as a proof-of-concept, as a simple base that can be improved upon. It is a more polished version of a [previous experiment](https://codepen.io/denilsonsa/pen/LVwWJM).
 
 Features:
 
@@ -27,7 +27,7 @@ Features:
         * Does not require polyfills on Firefox if [`dom.webcomponents.enabled` flag](https://www.designedbyaturtle.co.uk/2015/how-to-enable-web-components-in-firefox-shadow-dom/) is enabled.
 * Most likely not production-ready!
     * Unless the incompatibilities and limitations can be ignored.
-    * But [TJ VanToll thinks that Web Components *Are* Ready For Production](http://developer.telerik.com/featured/web-components-ready-production/)
+    * But [TJ VanToll thinks that Web Components *Are* Ready For Production](https://developer.telerik.com/featured/web-components-ready-production/)
 * Excellent example for learning the new web technologies.
 
 
@@ -66,4 +66,4 @@ The usage of HTML5 custom elements is based on [HTML5 Rocks tutorial](http://www
 
 [Web Components the Right Way](https://github.com/mateusortiz/webcomponents-the-right-way) is a very comprehensive list of resources related to Web Components.
 
-[demo]: http://denilsonsa.github.io/html5-knob/
+[demo]: https://denilsonsa.github.io/html5-knob/
